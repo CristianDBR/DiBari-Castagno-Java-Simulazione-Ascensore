@@ -1,9 +1,14 @@
 public class SimulazioneAscensore {
     public static void main(String[] args) {
         final int NUMERO_PIANI = 10;
-        final int DURATA_SIMULAZIONE = 100;  // secondi
+        final int DURATA_SIMULAZIONE = 100;  // 100 cicli
         final int CAPACITA_ASCENSORE = 5;
         int idContatore = 1;  // identificativo per le persone
+
+        // Colori ANSI per il terminale
+        final String RESET  = "\033[0m";
+        final String CYAN   = "\033[36m";
+        final String YELLOW = "\033[33m";
 
         // Creazione dei piani
         Piano[] piani = new Piano[NUMERO_PIANI];
@@ -14,48 +19,77 @@ public class SimulazioneAscensore {
         // Creazione dell'ascensore
         Ascensore ascensore = new Ascensore(CAPACITA_ASCENSORE);
 
-        // Simulazione per DURATA_SIMULAZIONE secondi
-        for (int secondo = 1; secondo <= DURATA_SIMULAZIONE; secondo++) {
-            System.out.println("\nSecondo " + secondo);
+        // Ciclo di simulazione
+        for (int ciclo = 1; ciclo <= DURATA_SIMULAZIONE; ciclo++) {
+            System.out.println(CYAN + "\n===== CICLO " + ciclo + " =====" + RESET);
 
-            // Genera una nuova persona in un piano casuale (da 1 a 10)
-            int pianoPartenza = (int) (Math.random() * NUMERO_PIANI) + 1;
-            Persona nuovaPersona = new Persona(idContatore++, pianoPartenza);
-            piani[pianoPartenza - 1].aggiungiPersonaCoda(nuovaPersona);
+            // Spawn: ogni 3 cicli, probabilità 50%
+            if (ciclo % 3 == 0 && Math.random() < 0.5) {
+                int pianoPartenza = (int) (Math.random() * NUMERO_PIANI) + 1;
+                Persona nuovaPersona = new Persona(idContatore++, pianoPartenza);
+                piani[pianoPartenza - 1].aggiungiPersonaCoda(nuovaPersona);
+            }
 
-            // Simula il movimento dell'ascensore
-            // 1. Apri le porte
-            ascensore.apriPorte();
+            // Aggiorna il tempo di attesa per ogni piano:
+            // Incrementa se ci sono persone in coda e l'ascensore non è sullo stesso piano con porte aperte.
+            for (Piano piano : piani) {
+                if (!piano.getCodaPersone().isEmpty()) {
+                    if (piano.getNumeroPiano() == ascensore.getPianoCorrente() && ascensore.isPorteAperte()) {
+                        piano.resettaTempoAttesa();
+                    } else {
+                        piano.incrementaTempoAttesa();
+                    }
+                }
+            }
 
-            // 2. Se ci sono persone in coda sul piano corrente, farle salire
-            Piano pianoCorrente = piani[ascensore.getPianoCorrente() - 1];
-            while (!pianoCorrente.getCodaPersone().isEmpty() && ascensore.isPorteAperte() && ascensore.toString().contains("Persone a bordo:") == false) {
-                Persona p = pianoCorrente.rimuoviPersonaCoda();
-                if (p != null) {
+            // Determina se il piano corrente ha richieste:
+            // Richiesta se vi sono persone in coda o se un passeggero a bordo deve scendere.
+            boolean richiestaCorrente = !piani[ascensore.getPianoCorrente() - 1].getCodaPersone().isEmpty();
+            for (Persona p : ascensore.getPersoneDentro()) {
+                if (p.getPianoDestinazione() == ascensore.getPianoCorrente()) {
+                    richiestaCorrente = true;
+                    break;
+                }
+            }
+            if (richiestaCorrente) {
+                ascensore.apriPorte();
+            } else {
+                System.out.println(YELLOW + "[ASC] Nessuna richiesta al piano " + ascensore.getPianoCorrente() +
+                        ". Porte rimangono chiuse." + RESET);
+            }
+
+            // Se le porte sono aperte, gestisci salite (fai salire le persone in coda dal piano corrente)
+            if (ascensore.isPorteAperte()) {
+                while (ascensore.isPorteAperte() && !piani[ascensore.getPianoCorrente() - 1].getCodaPersone().isEmpty()) {
+                    Persona p = piani[ascensore.getPianoCorrente() - 1].rimuoviPersonaCoda();
                     ascensore.aggiungiPersona(p);
                 }
             }
 
-            // 3. Far scendere le persone che hanno raggiunto la destinazione
+            // Gestione discese: fai scendere i passeggeri la cui destinazione è il piano corrente
             ascensore.rimuoviPersoneArrivate();
 
-            // Stampa lo stato dell'ascensore e del piano corrente
+            // Stampa lo stato corrente
             System.out.println(ascensore);
-            System.out.println(pianoCorrente);
+            System.out.println(piani[ascensore.getPianoCorrente() - 1]);
 
-            // 4. Chiudi le porte prima di muovere l'ascensore
-            ascensore.chiudiPorte();
+            // Se le porte sono aperte, chiudile
+            if (ascensore.isPorteAperte()) {
+                ascensore.chiudiPorte();
+            }
 
-            // 5. L'ascensore decide la direzione in base alle richieste
+            // L'ascensore decide il prossimo piano da servire, considerando sia le richieste interne che quelle esterne
             ascensore.decidiDirezione(piani);
 
-            // Simula l'attesa di un secondo (in un'applicazione reale si userebbe Thread.sleep)
+            System.out.println(CYAN + "===== FINE CICLO " + ciclo + " =====" + RESET);
+            
+            // Simula l'attesa di 1 secondo
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println("Simulazione terminata.");
+        System.out.println(CYAN + "Simulazione terminata." + RESET);
     }
 }

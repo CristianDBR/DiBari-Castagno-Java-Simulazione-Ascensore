@@ -10,14 +10,14 @@ public class Persona {
     }
 
     public void saliSuAscensore(Ascensore a) {
-        if (a.isPorteAperte() && a.getPianoCorrente() == a.getPianoCorrente()) {
-            System.out.println("La persona " + id + " sale sull'ascensore al piano " + a.getPianoCorrente());
+        if (a.isPorteAperte() && a.getPianoCorrente() == this.pianoDestinazione) {
+            System.out.println("[PERSONA " + id + "] Sale al piano " + a.getPianoCorrente());
         }
     }
 
     public void scendiDaAscensore(Ascensore a) {
         if (a.isPorteAperte() && a.getPianoCorrente() == this.pianoDestinazione) {
-            System.out.println("La persona " + id + " scende dall'ascensore al piano " + a.getPianoCorrente());
+            System.out.println("[PERSONA " + id + "] Scende al piano " + a.getPianoCorrente());
         }
     }
 
@@ -31,6 +31,6 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Persona " + id + " -> Destinazione: " + pianoDestinazione;
+        return "Persona " + id + " (-> " + pianoDestinazione + ")";
     }
 }
