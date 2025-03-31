@@ -22,7 +22,10 @@ public class SimulazioneAscensore {
         // Ciclo di simulazione
         for (int ciclo = 1; ciclo <= DURATA_SIMULAZIONE; ciclo++) {
             System.out.println(CYAN + "\n===== CICLO " + ciclo + " =====" + RESET);
-
+            // Stampa lo stato attuale dell'ascensore e dei piani
+            for (Piano p : piani) {
+                System.out.println(p);
+            }
             // Spawn: ogni 3 cicli, probabilità 50%
             if (ciclo % 3 == 0 && Math.random() < 0.5) {
                 int pianoPartenza = (int) (Math.random() * NUMERO_PIANI) + 1;
