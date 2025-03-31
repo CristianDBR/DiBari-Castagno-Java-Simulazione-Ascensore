@@ -9,6 +9,7 @@ public class SimulazioneAscensore {
         final String RESET  = "\033[0m";
         final String CYAN   = "\033[36m";
         final String YELLOW = "\033[33m";
+        final String ORANGE = "\033[38;5;208m";
 
         // Creazione dei piani
         Piano[] piani = new Piano[NUMERO_PIANI];
@@ -23,11 +24,9 @@ public class SimulazioneAscensore {
         for (int ciclo = 1; ciclo <= DURATA_SIMULAZIONE; ciclo++) {
             System.out.println(CYAN + "\n===== CICLO " + ciclo + " =====" + RESET);
             // Stampa lo stato attuale dell'ascensore e dei piani
-            for (Piano p : piani) {
-                System.out.println(p);
-            }
+            
             // Spawn: ogni 3 cicli, probabilità 50%
-            if (ciclo % 3 == 0 && Math.random() < 0.5) {
+            if (ciclo % 2 == 0 && Math.random() < 0.75) {
                 int pianoPartenza = (int) (Math.random() * NUMERO_PIANI) + 1;
                 Persona nuovaPersona = new Persona(idContatore++, pianoPartenza);
                 piani[pianoPartenza - 1].aggiungiPersonaCoda(nuovaPersona);
@@ -38,7 +37,7 @@ public class SimulazioneAscensore {
             for (Piano piano : piani) {
                 if (!piano.getCodaPersone().isEmpty()) {
                     if (piano.getNumeroPiano() == ascensore.getPianoCorrente() && ascensore.isPorteAperte()) {
-                        piano.resettaTempoAttesa();
+                        piano.resettaTempoAttesa(); 
                     } else {
                         piano.incrementaTempoAttesa();
                     }
@@ -74,6 +73,7 @@ public class SimulazioneAscensore {
 
             // Stampa lo stato corrente
             System.out.println(ascensore);
+            piani[ascensore.getPianoCorrente() - 1].ascenzore = "";
             System.out.println(piani[ascensore.getPianoCorrente() - 1]);
 
             // Se le porte sono aperte, chiudile
@@ -83,7 +83,10 @@ public class SimulazioneAscensore {
 
             // L'ascensore decide il prossimo piano da servire, considerando sia le richieste interne che quelle esterne
             ascensore.decidiDirezione(piani);
-
+            for (Piano p : piani) {
+                p.ascenzore = (ascensore.getPianoCorrente() == p.getNumeroPiano()) ? ORANGE + "\t\t[]" : RESET + "\t\t.";
+                System.out.println(p);
+            }
             System.out.println(CYAN + "===== FINE CICLO " + ciclo + " =====" + RESET);
             
             // Simula l'attesa di 1 secondo
@@ -94,5 +97,7 @@ public class SimulazioneAscensore {
             }
         }
         System.out.println(CYAN + "Simulazione terminata." + RESET);
+    
     }
+    
 }

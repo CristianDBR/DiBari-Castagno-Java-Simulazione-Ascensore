@@ -4,6 +4,7 @@ public class Piano {
     private int numeroPiano;
     private ArrayList<Persona> codaPersone;
     private int tempoAttesa; // in secondi
+    public String ascenzore;
 
     // Colori ANSI
     public static final String RESET  = "\033[0m";
@@ -52,6 +53,6 @@ public class Piano {
     @Override
     public String toString() {
         return BLUE + "[PIANO " + numeroPiano + "] Persone in coda: " + codaPersone.size() +
-                " | Tempo attesa: " + tempoAttesa + " sec" + RESET;
+                " | Tempo attesa: " + tempoAttesa + " sec " + ascenzore + RESET;
     }
 }
