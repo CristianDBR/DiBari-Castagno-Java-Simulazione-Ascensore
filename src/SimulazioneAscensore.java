@@ -1,9 +1,9 @@
 public class SimulazioneAscensore {
     public static void main(String[] args) {
         final int NUMERO_PIANI = 10;
-        final int DURATA_SIMULAZIONE = 100;  // 100 cicli
+        final int DURATA_SIMULAZIONE = 100;
         final int CAPACITA_ASCENSORE = 5;
-        int idContatore = 1;  // identificativo per le persone
+        int idContatore = 1;
 
         // Colori ANSI per il terminale
         final String RESET  = "\033[0m";
@@ -17,7 +17,6 @@ public class SimulazioneAscensore {
             piani[i] = new Piano(i + 1);
         }
 
-        // Creazione dell'ascensore
         Ascensore ascensore = new Ascensore(CAPACITA_ASCENSORE);
 
         // Ciclo di simulazione
@@ -25,7 +24,7 @@ public class SimulazioneAscensore {
             System.out.println(CYAN + "\n===== CICLO " + ciclo + " =====" + RESET);
             // Stampa lo stato attuale dell'ascensore e dei piani
             
-            // Spawn: ogni 3 cicli, probabilità 50%
+            // Spawn: ogni 2 cicli, probabilità 75%
             if (ciclo % 2 == 0 && Math.random() < 0.75) {
                 int pianoPartenza = (int) (Math.random() * NUMERO_PIANI) + 1;
                 Persona nuovaPersona = new Persona(idContatore++, pianoPartenza);

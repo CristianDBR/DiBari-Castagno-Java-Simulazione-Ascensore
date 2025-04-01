@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Piano {
     private int numeroPiano;
     private ArrayList<Persona> codaPersone;
-    private int tempoAttesa; // in secondi
+    private int tempoAttesa;
     public String ascenzore;
 
     // Colori ANSI
@@ -33,7 +33,11 @@ public class Piano {
 
     public Persona rimuoviPersonaCoda() {
         if (!codaPersone.isEmpty()) {
-            return codaPersone.remove(0);
+            Persona personaRimossa = codaPersone.remove(0);
+            if (codaPersone.isEmpty()) {
+                resettaTempoAttesa();
+            }
+            return personaRimossa;
         }
         return null;
     }

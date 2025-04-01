@@ -12,11 +12,10 @@ public class Ascensore {
     public static final String GREEN  = "\033[32m";
     public static final String YELLOW = "\033[33m";
     public static final String CYAN   = "\033[36m";
-    // Un codice per l'arancione (usando una palette 256-colors, 208 è un arancione abbastanza brillante)
     public static final String ORANGE = "\033[38;5;208m";
 
     public Ascensore(int capienzaMassima) {
-        this.pianoCorrente = 1; // partenza dal piano 1
+        this.pianoCorrente = 1;
         this.capienzaMassima = capienzaMassima;
         this.personeDentro = new ArrayList<>();
         this.porteAperte = false;
@@ -80,14 +79,8 @@ public class Ascensore {
         }
     }
 
-    /**
-     * Schedula il prossimo piano da servire considerando:
-     * - Le richieste interne (passeggeri a bordo) con costo = distanza.
-     * - Le richieste esterne (piani con persone in coda) con costo = distanza - alpha * tempoAttesa.
-     * Viene scelto il piano con il costo (score) minore.
-     */
     public void decidiDirezione(Piano[] piani) {
-        double alpha = 0.1; // Fattore di ponderazione per il tempo di attesa
+        double alpha = 0.1;
         int bestFloor = pianoCorrente;
         double bestScore = Double.MAX_VALUE;
         
