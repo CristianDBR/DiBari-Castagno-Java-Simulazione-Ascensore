@@ -29,7 +29,6 @@ public class Ascensore {
         return porteAperte;
     }
     
-    // Getter per i passeggeri a bordo
     public ArrayList<Persona> getPersoneDentro() {
         return personeDentro;
     }
@@ -84,7 +83,6 @@ public class Ascensore {
         int bestFloor = pianoCorrente;
         double bestScore = Double.MAX_VALUE;
         
-        // Richieste interne
         for (Persona p : personeDentro) {
             int floor = p.getPianoDestinazione();
             double score = Math.abs(floor - pianoCorrente);
@@ -93,7 +91,6 @@ public class Ascensore {
                 bestFloor = floor;
             }
         }
-        // Richieste esterne (piani in coda)
         for (Piano piano : piani) {
             if (!piano.getCodaPersone().isEmpty()) {
                 int floor = piano.getNumeroPiano();
